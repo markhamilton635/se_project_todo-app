@@ -20,7 +20,6 @@ class Popup {
     });
 
     this._popupElement.addEventListener("mousedown", (evt) => {
-      debugger;
       if (evt.target === this._popupElement) {
         this.close();
       }

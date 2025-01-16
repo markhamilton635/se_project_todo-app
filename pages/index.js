@@ -3,7 +3,7 @@ import { validationConfig, initialTodos } from "../utils/constants.js";
 import Todo from "../components/Todo.js";
 import FormValidator from "../components/FormValidator.js";
 import Section from "../components/Section.js";
-import PopupWithForm from "../components/Popup.js";
+import PopupWithForm from "../components/PopupWithForm.js";
 
 const addTodoButton = document.querySelector(".button_action_add");
 const addTodoPopup = document.querySelector("#add-todo-popup");
@@ -13,7 +13,18 @@ const todosList = document.querySelector(".todos__list");
 
 const addTodoPopupForm = new PopupWithForm({
   popupSelector: "#add-todo-popup",
-  handleFormSubmit: () => {},
+  handleFormSubmit: (inputValues) => {
+    const { name, date: dateInput } = inputValues;
+    const id = uuidv4();
+    const date = new Date(dateInput);
+    date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
+
+    const values = { name, date, id };
+    const todo = generateTodo(values);
+    todosList.append(todo);
+    addTodoPopupForm.close();
+    newTodoValidator.resetValidation();
+  },
 });
 addTodoPopupForm.setEventListeners();
 
@@ -27,20 +38,20 @@ addTodoButton.addEventListener("click", () => {
   addTodoPopupForm.open();
 });
 
-addTodoForm.addEventListener("submit", (evt) => {
-  evt.preventDefault();
-  const name = evt.target.name.value;
-  const dateInput = evt.target.date.value;
-  const id = uuidv4();
-  const date = new Date(dateInput);
-  date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
+// addTodoForm.addEventListener("submit", (evt) => {
+//   evt.preventDefault();
+//   const name = evt.target.name.value;
+//   const dateInput = evt.target.date.value;
+//   const id = uuidv4();
+//   const date = new Date(dateInput);
+//   date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
 
-  const values = { name, date, id };
-  const todo = generateTodo(values);
-  todosList.append(todo);
-  closeModal(addTodoPopup);
-  newTodoValidator.resetValidation();
-});
+//   const values = { name, date, id };
+//   const todo = generateTodo(values);
+//   todosList.append(todo);
+//   closeModal(addTodoPopup);
+//   newTodoValidator.resetValidation();
+// });
 
 const section = new Section({
   items: initialTodos,
